@@ -16,10 +16,7 @@ export default function HeroSection({ navigate }: { navigate: (p: string) => voi
 
       <div className="relative mx-auto max-w-5xl px-6 pb-20 pt-16 text-center md:pt-24 md:pb-28 lg:px-8">
         <div className="mb-8 inline-flex items-center gap-2.5 rounded-full border border-blue-200/60 bg-blue-50/80 px-5 py-2 shadow-sm">
-          <span className="relative flex h-2 w-2">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-500 opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-blue-600" />
-          </span>
+          <span className="inline-flex h-2 w-2 rounded-full bg-blue-600" />
           <span className="text-[13px] font-semibold text-blue-700 tracking-wide">100% Free — No Credit Card Required</span>
         </div>
 
@@ -45,10 +42,9 @@ export default function HeroSection({ navigate }: { navigate: (p: string) => voi
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
           <button
-            onClick={() => navigate("/login")}
-            className="group relative inline-flex h-14 items-center gap-2.5 overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 px-10 text-[16px] font-bold text-white shadow-xl shadow-blue-600/25 transition-all hover:shadow-blue-600/40 hover:scale-[1.02]"
+            onClick={() => navigate("/signup")}
+            className="group relative inline-flex h-14 items-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 px-10 text-[16px] font-bold text-white shadow-xl shadow-blue-600/25 transition-all hover:shadow-blue-600/40 hover:scale-[1.02]"
           >
-            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-200%] group-hover:translate-x-[200%] transition-transform duration-700" />
             Start Building for Free
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} className="transition-transform group-hover:translate-x-1">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
