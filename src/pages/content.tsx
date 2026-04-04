@@ -11,19 +11,19 @@ interface ContentItem {
   status?: string;
 }
 
+const TABS = [
+  { key: "meetings", label: "Replay Meetings", endpoint: "/admin/replay-meetings" },
+  { key: "materials", label: "Seller Materials", endpoint: "/admin/seller-materials" },
+  { key: "updates", label: "Amazon Updates", endpoint: "/admin/amazon-updates" },
+];
+
 export default function ContentPage() {
   const [items, setItems] = useState<ContentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("meetings");
 
-  const tabs = [
-    { key: "meetings", label: "Replay Meetings", endpoint: "/admin/replay-meetings" },
-    { key: "materials", label: "Seller Materials", endpoint: "/admin/seller-materials" },
-    { key: "updates", label: "Amazon Updates", endpoint: "/admin/amazon-updates" },
-  ];
-
   useEffect(() => {
-    const tab = tabs.find((t) => t.key === activeTab);
+    const tab = TABS.find((t) => t.key === activeTab);
     if (!tab) return;
     setLoading(true);
     apiGet(tab.endpoint)
@@ -34,24 +34,15 @@ export default function ContentPage() {
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: "#fff", margin: 0 }}>Content</h1>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>
-          Manage platform content
-        </p>
+      <div className="mb-6">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Content</h1>
+        <p className="mt-1 text-[14px] text-gray-500">Manage platform content</p>
       </div>
 
-      <div style={{ display: "flex", gap: 4, marginBottom: 20, borderBottom: "1px solid rgba(255,255,255,0.06)", paddingBottom: 8 }}>
-        {tabs.map((t) => (
-          <button
-            key={t.key}
-            onClick={() => setActiveTab(t.key)}
-            style={{
-              padding: "8px 16px", borderRadius: 6, border: "none", cursor: "pointer",
-              background: activeTab === t.key ? "rgba(245,158,11,0.15)" : "transparent",
-              color: activeTab === t.key ? "#F59E0B" : "rgba(255,255,255,0.4)",
-              fontSize: 13, fontWeight: activeTab === t.key ? 600 : 400,
-            }}
+      <div className="mb-6 flex gap-1 border-b border-gray-200">
+        {TABS.map((t) => (
+          <button key={t.key} onClick={() => setActiveTab(t.key)}
+            className={`px-4 py-2.5 text-[13px] font-medium transition-all border-b-2 -mb-px ${activeTab === t.key ? "border-indigo-600 text-indigo-700" : "border-transparent text-gray-400 hover:text-gray-600"}`}
           >
             {t.label}
           </button>
@@ -59,53 +50,35 @@ export default function ContentPage() {
       </div>
 
       {loading ? (
-        <div style={{ color: "rgba(255,255,255,0.4)" }}>Loading content...</div>
+        <div className="text-[14px] text-gray-400">Loading content...</div>
       ) : (
-        <div style={{
-          background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: 12, overflow: "hidden",
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+          <table className="w-full">
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
                 {["Title", "Type", "Category", "Status", "Created"].map((h) => (
-                  <th key={h} style={{
-                    padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600,
-                    color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1,
-                  }}>{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {items.map((item) => (
-                <tr key={item.id || item._id} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <td style={{ padding: "10px 16px", fontSize: 13, color: "#fff" }}>{item.title}</td>
-                  <td style={{ padding: "10px 16px", fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
-                    {item.type || "—"}
-                  </td>
-                  <td style={{ padding: "10px 16px", fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
-                    {item.category || "—"}
-                  </td>
-                  <td style={{ padding: "10px 16px" }}>
-                    <span style={{
-                      fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 4,
-                      background: item.status === "published" ? "rgba(16,185,129,0.15)" : "rgba(245,158,11,0.15)",
-                      color: item.status === "published" ? "#10B981" : "#F59E0B",
-                    }}>
+                <tr key={item.id || item._id} className="border-b border-gray-50 transition-colors hover:bg-gray-50/50">
+                  <td className="px-5 py-3 text-[13px] font-medium text-gray-900">{item.title}</td>
+                  <td className="px-5 py-3 text-[12px] text-gray-500">{item.type || "—"}</td>
+                  <td className="px-5 py-3 text-[12px] text-gray-500">{item.category || "—"}</td>
+                  <td className="px-5 py-3">
+                    <span className={`inline-flex rounded-md px-2 py-0.5 text-[10px] font-semibold ${item.status === "published" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}`}>
                       {item.status || "draft"}
                     </span>
                   </td>
-                  <td style={{ padding: "10px 16px", fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-                    {item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}
-                  </td>
+                  <td className="px-5 py-3 text-[12px] text-gray-400">{item.created_at ? new Date(item.created_at).toLocaleDateString() : "—"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
           {items.length === 0 && (
-            <div style={{ padding: 32, textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
-              No content found
-            </div>
+            <div className="py-12 text-center text-[13px] text-gray-400">No content found</div>
           )}
         </div>
       )}
