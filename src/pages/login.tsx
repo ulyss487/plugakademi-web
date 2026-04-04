@@ -5,26 +5,19 @@ import { useLocation } from "wouter";
 export default function LoginPage() {
   const { login, user, loading: authLoading } = useAuth();
   const [, setLocation] = useLocation();
-  const [email, setEmail]             = useState("");
-  const [password, setPassword]       = useState("");
-  const [showPass, setShowPass]       = useState(false);
-  const [loading, setLoading]         = useState(false);
-  const [error, setError]             = useState("");
-  const [emailFocused, setEmailFocused] = useState(false);
-  const [passFocused, setPassFocused]   = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPass, setShowPass] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!authLoading && user) {
-      setLocation("/dashboard");
-    }
+    if (!authLoading && user) setLocation("/dashboard");
   }, [authLoading, user, setLocation]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !password) {
-      setError("Please enter both email and password");
-      return;
-    }
+    if (!email.trim() || !password) { setError("Please enter both email and password"); return; }
     setLoading(true);
     setError("");
     try {
@@ -32,286 +25,130 @@ export default function LoginPage() {
       setLocation("/dashboard");
     } catch (err: any) {
       const code = err?.code || "";
-      if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") {
-        setError("Invalid email or password");
-      } else if (code === "auth/too-many-requests") {
-        setError("Too many attempts. Please try again later.");
-      } else {
-        setError(err.message || "Login failed");
-      }
-    } finally {
-      setLoading(false);
-    }
+      if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") setError("Invalid email or password");
+      else if (code === "auth/too-many-requests") setError("Too many attempts. Please try again later.");
+      else setError(err.message || "Login failed");
+    } finally { setLoading(false); }
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#0A0A14", fontFamily: "'Inter', system-ui, sans-serif" }}>
-
-      {/* ── LEFT PANEL ── */}
-      <div style={{
-        width: "50%", minWidth: 0, position: "relative",
-        background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%)",
-        display: "flex", flexDirection: "column", justifyContent: "space-between",
-        padding: "56px", overflow: "hidden",
-      }} className="left-panel">
-
-        {/* Grid overlay */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          backgroundImage: "linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }} />
-
-        {/* Orbs */}
-        <div style={{ position: "absolute", top: -150, right: -100, width: 500, height: 500, borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.35) 0%, rgba(99,102,241,0.1) 50%, transparent 70%)", filter: "blur(30px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", bottom: -50, left: -80, width: 400, height: 400, borderRadius: "50%", background: "radial-gradient(circle, rgba(245,158,11,0.2) 0%, rgba(245,158,11,0.05) 50%, transparent 70%)", filter: "blur(40px)", pointerEvents: "none" }} />
-        <div style={{ position: "absolute", top: "40%", left: "30%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(16,185,129,0.1) 0%, transparent 70%)", filter: "blur(50px)", pointerEvents: "none" }} />
-
-        {/* Content */}
-        <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", gap: 40, flex: 1, justifyContent: "center" }}>
-
-          {/* Logo */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <div style={{
-              width: 52, height: 52, borderRadius: 16,
-              background: "linear-gradient(135deg, #F59E0B, #D97706)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 26, fontWeight: 900, color: "#000",
-              boxShadow: "0 8px 25px rgba(245,158,11,0.4)",
-            }}>P</div>
-            <div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", letterSpacing: "-0.01em" }}>
-                Plug <span style={{ color: "#F59E0B" }}>Akademi</span>
-              </div>
-              <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>Seller Academy</div>
-            </div>
+    <div className="flex min-h-screen bg-white">
+      <LeftPanel />
+      <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
+        <div className="w-full max-w-[400px]">
+          <div className="mb-8">
+            <h2 className="text-[28px] font-extrabold tracking-tight text-gray-900">Welcome back</h2>
+            <p className="mt-2 text-[15px] text-gray-500">Sign in to your account to continue</p>
           </div>
 
-          {/* Hero block */}
-          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-            <h1 style={{ fontSize: 40, fontWeight: 900, color: "#fff", lineHeight: 1.2, letterSpacing: "-0.02em", margin: 0 }}>
-              Build your e-commerce<br />
-              <span style={{ background: "linear-gradient(135deg, #F59E0B, #818CF8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                empire with confidence
-              </span>
-            </h1>
-            <p style={{ fontSize: 16, color: "rgba(255,255,255,0.55)", lineHeight: 1.7, maxWidth: 460, margin: 0 }}>
-              Join thousands of sellers mastering Amazon & Walmart with expert-led courses,
-              AI-powered tools, and a thriving community.
-            </p>
-          </div>
-
-          {/* Trust row */}
-          <div style={{ display: "flex", gap: 20 }}>
-            {[
-              { icon: "🛡️", label: "Verified Strategies" },
-              { icon: "⚡", label: "AI-Powered Tools" },
-              { icon: "👥", label: "2,500+ Sellers" },
-            ].map(item => (
-              <div key={item.label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <div style={{
-                  width: 32, height: 32, borderRadius: 8,
-                  background: "rgba(245,158,11,0.12)",
-                  border: "1px solid rgba(245,158,11,0.2)",
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14,
-                }}>
-                  {item.icon}
-                </div>
-                <span style={{ fontSize: 13, color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>{item.label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Testimonial */}
-          <div style={{
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: 16, padding: 24, maxWidth: 480,
-            display: "flex", flexDirection: "column", gap: 16,
-          }}>
-            <div style={{
-              width: 32, height: 32, borderRadius: 8,
-              background: "rgba(245,158,11,0.12)",
-              border: "1px solid rgba(245,158,11,0.2)",
-              display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16,
-            }}>💬</div>
-            <p style={{ fontSize: 14, color: "rgba(255,255,255,0.7)", lineHeight: 1.7, fontStyle: "italic", margin: 0 }}>
-              "Plug Akademi helped me scale from $0 to $15K/month on Amazon in just 4 months.
-              The courses and community are incredible."
-            </p>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: "50%",
-                background: "linear-gradient(135deg, #F59E0B33, #6366F133)",
-                border: "1px solid rgba(245,158,11,0.3)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 13, fontWeight: 700, color: "#F59E0B",
-              }}>JM</div>
-              <div>
-                <div style={{ fontSize: 13, fontWeight: 600, color: "#fff" }}>Jean Marc</div>
-                <div style={{ fontSize: 11, color: "rgba(255,255,255,0.4)" }}>Amazon FBA Seller</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div style={{ position: "relative", zIndex: 1, fontSize: 12, color: "rgba(255,255,255,0.25)", marginTop: 32 }}>
-          © 2026 Plug Akademi. All rights reserved.
-        </div>
-      </div>
-
-      {/* ── RIGHT PANEL (Form) ── */}
-      <div style={{
-        flex: 1, display: "flex", flexDirection: "column",
-        justifyContent: "center", alignItems: "center",
-        background: "#0A0A14",
-        padding: "48px 40px",
-        position: "relative",
-      }}>
-        {/* Subtle orb */}
-        <div style={{ position: "absolute", top: "20%", right: "10%", width: 300, height: 300, borderRadius: "50%", background: "radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%)", filter: "blur(40px)", pointerEvents: "none" }} />
-
-        <div style={{ width: "100%", maxWidth: 420, position: "relative", zIndex: 1 }}>
-
-          {/* Form header */}
-          <div style={{ marginBottom: 36 }}>
-            <h2 style={{ fontSize: 28, fontWeight: 800, color: "#fff", marginBottom: 8, letterSpacing: "-0.02em" }}>
-              Welcome back
-            </h2>
-            <p style={{ fontSize: 15, color: "rgba(255,255,255,0.45)", lineHeight: 1.5 }}>
-              Sign in to your account to continue
-            </p>
-          </div>
-
-          {/* Error */}
           {error && (
-            <div style={{
-              display: "flex", alignItems: "center", gap: 10,
-              background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.25)",
-              borderRadius: 12, padding: "12px 16px", marginBottom: 24,
-            }}>
-              <span style={{ fontSize: 16 }}>⚠️</span>
-              <span style={{ color: "#EF4444", fontSize: 13, lineHeight: 1.5 }}>{error}</span>
+            <div className="mb-6 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="shrink-0 text-red-500"><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" /></svg>
+              <span className="text-[13px] text-red-600">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
-
-            {/* Email */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <label style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>Email</label>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 10,
-                background: emailFocused ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.04)",
-                border: `1.5px solid ${emailFocused ? "rgba(245,158,11,0.5)" : "rgba(255,255,255,0.1)"}`,
-                borderRadius: 12, padding: "0 16px", height: 50,
-                transition: "all 0.2s",
-                boxShadow: emailFocused ? "0 0 0 3px rgba(245,158,11,0.1)" : "none",
-              }}>
-                <span style={{ fontSize: 16, flexShrink: 0 }}>✉️</span>
-                <input
-                  type="email" value={email}
-                  onChange={e => { setEmail(e.target.value); setError(""); }}
-                  onFocus={() => setEmailFocused(true)}
-                  onBlur={() => setEmailFocused(false)}
-                  placeholder="name@company.com"
-                  style={{
-                    flex: 1, background: "transparent", border: "none", outline: "none",
-                    fontSize: 15, color: "#fff", fontFamily: "inherit",
-                  }}
-                />
-              </div>
+          <form onSubmit={handleLogin} className="flex flex-col gap-5">
+            <div className="flex flex-col gap-2">
+              <label className="text-[14px] font-semibold text-gray-700">Email</label>
+              <input
+                type="email" value={email}
+                onChange={(e) => { setEmail(e.target.value); setError(""); }}
+                placeholder="name@company.com"
+                className="h-12 rounded-xl border border-gray-200 bg-gray-50/50 px-4 text-[15px] text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
+              />
             </div>
 
-            {/* Password */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                <label style={{ fontSize: 14, fontWeight: 600, color: "rgba(255,255,255,0.8)" }}>Password</label>
-                <a href="#" style={{ fontSize: 13, color: "#F59E0B", textDecoration: "none", fontWeight: 500 }}>
-                  Forgot password?
-                </a>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[14px] font-semibold text-gray-700">Password</label>
+                <a href="#" className="text-[13px] font-medium text-indigo-600 hover:text-indigo-700">Forgot password?</a>
               </div>
-              <div style={{
-                display: "flex", alignItems: "center", gap: 10,
-                background: passFocused ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.04)",
-                border: `1.5px solid ${passFocused ? "rgba(245,158,11,0.5)" : "rgba(255,255,255,0.1)"}`,
-                borderRadius: 12, padding: "0 16px", height: 50,
-                transition: "all 0.2s",
-                boxShadow: passFocused ? "0 0 0 3px rgba(245,158,11,0.1)" : "none",
-              }}>
-                <span style={{ fontSize: 16, flexShrink: 0 }}>🔒</span>
+              <div className="relative">
                 <input
                   type={showPass ? "text" : "password"} value={password}
-                  onChange={e => { setPassword(e.target.value); setError(""); }}
-                  onFocus={() => setPassFocused(true)}
-                  onBlur={() => setPassFocused(false)}
+                  onChange={(e) => { setPassword(e.target.value); setError(""); }}
                   placeholder="Enter your password"
-                  style={{
-                    flex: 1, background: "transparent", border: "none", outline: "none",
-                    fontSize: 15, color: "#fff", fontFamily: "inherit",
-                  }}
+                  className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 pr-12 text-[15px] text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20"
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)} style={{
-                  background: "none", border: "none", cursor: "pointer",
-                  color: "rgba(255,255,255,0.4)", fontSize: 16, padding: 4,
-                }}>
-                  {showPass ? "🙈" : "👁️"}
+                <button type="button" onClick={() => setShowPass(!showPass)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600">
+                  {showPass ? (
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" /></svg>
+                  ) : (
+                    <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" /></svg>
+                  )}
                 </button>
               </div>
             </div>
 
-            {/* Submit */}
-            <button type="submit" disabled={loading} style={{
-              width: "100%", height: 50, borderRadius: 12, border: "none", cursor: loading ? "not-allowed" : "pointer",
-              background: loading ? "rgba(245,158,11,0.5)" : "linear-gradient(135deg, #F59E0B, #D97706)",
-              color: "#000", fontSize: 15, fontWeight: 700,
-              display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
-              fontFamily: "inherit",
-              boxShadow: loading ? "none" : "0 4px 20px rgba(245,158,11,0.4)",
-              transition: "all 0.3s",
-            }}>
-              {loading ? (
-                <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span style={{ width: 16, height: 16, border: "2px solid rgba(0,0,0,0.3)", borderTopColor: "#000", borderRadius: "50%", animation: "spin 0.8s linear infinite", display: "inline-block" }} />
-                  Signing in...
-                </span>
-              ) : (
-                <> Sign In &nbsp; → </>
-              )}
+            <button type="submit" disabled={loading} className="mt-1 flex h-12 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-[15px] font-bold text-white shadow-lg shadow-indigo-600/20 transition-all hover:shadow-indigo-600/30 disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? (<><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" /> Signing in...</>) : "Sign In"}
             </button>
           </form>
 
-          {/* Divider */}
-          <div style={{ display: "flex", alignItems: "center", gap: 12, margin: "28px 0" }}>
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", fontWeight: 500 }}>or</span>
-            <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.08)" }} />
+          <div className="my-7 flex items-center gap-3">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="text-[12px] font-medium text-gray-400">or</span>
+            <div className="h-px flex-1 bg-gray-200" />
           </div>
 
-          {/* Sign up link */}
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <span style={{ fontSize: 14, color: "rgba(255,255,255,0.45)" }}>New to Plug Akademi? </span>
-            <a href="#" style={{ fontSize: 14, color: "#F59E0B", fontWeight: 600, textDecoration: "none" }}>
-              Create an account
-            </a>
-          </div>
+          <p className="text-center text-[14px] text-gray-500">
+            New to Plug Akademi?{" "}
+            <button onClick={() => setLocation("/signup")} className="font-semibold text-indigo-600 hover:text-indigo-700">Create an account</button>
+          </p>
 
-          {/* Security footer */}
-          <div style={{ textAlign: "center", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-            <span style={{ fontSize: 14 }}>🛡️</span>
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.25)" }}>Protected by enterprise-grade security</span>
+          <div className="mt-8 flex items-center justify-center gap-2 text-[12px] text-gray-400">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>
+            Protected by enterprise-grade security
           </div>
         </div>
       </div>
+    </div>
+  );
+}
 
-      <style>{`
-        @keyframes spin { to { transform: rotate(360deg); } }
-        input::placeholder { color: rgba(255,255,255,0.25); }
-        @media (max-width: 768px) {
-          .left-panel { display: none !important; }
-        }
-      `}</style>
+function LeftPanel() {
+  return (
+    <div className="relative hidden w-1/2 overflow-hidden bg-gradient-to-br from-indigo-600 via-blue-600 to-violet-700 lg:block">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.15),transparent_60%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "32px 32px" }} />
+
+      <div className="relative flex h-full flex-col justify-between p-14">
+        <div className="flex flex-col gap-10">
+          <div className="flex items-center gap-3">
+            <img src="/logo.png" alt="Plug Akademi" className="h-12 w-12 rounded-2xl object-contain" />
+            <div>
+              <div className="text-xl font-extrabold text-white tracking-tight">Plug Akademi</div>
+              <div className="text-[12px] font-medium text-white/50">Seller Academy</div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-5 mt-8">
+            <h1 className="text-[40px] font-extrabold leading-[1.1] tracking-tight text-white">
+              Build your<br />Amazon FBA<br />
+              <span className="text-white/70">empire</span>
+            </h1>
+            <p className="max-w-[400px] text-[16px] leading-relaxed text-white/60">
+              AI-powered tools, expert courses, and a thriving seller community. Everything you need, completely free.
+            </p>
+          </div>
+
+          <div className="flex gap-5 mt-4">
+            {[
+              { icon: <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" /></svg>, label: "Verified Strategies" },
+              { icon: <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" /></svg>, label: "AI-Powered" },
+              { icon: <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" /></svg>, label: "500+ Sellers" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-2">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white/10 text-white/80">{item.icon}</div>
+                <span className="text-[13px] font-medium text-white/60">{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="text-[12px] text-white/30">&copy; 2026 Plug Akademi. All rights reserved.</div>
+      </div>
     </div>
   );
 }
