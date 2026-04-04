@@ -1,3 +1,5 @@
+const APP_URL = "https://app.plugakademi.org";
+
 export default function CTASection({ navigate }: { navigate: (p: string) => void }) {
   return (
     <section id="community" className="mx-auto max-w-7xl px-6 pb-24 md:pb-32 lg:px-8">
@@ -30,15 +32,15 @@ export default function CTASection({ navigate }: { navigate: (p: string) => void
           </p>
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <button
-              onClick={() => navigate("/signup")}
-              className="group inline-flex h-16 items-center gap-3 rounded-2xl bg-white px-12 text-[17px] font-extrabold text-gray-900 shadow-2xl shadow-black/20 transition-all hover:bg-gray-50 hover:scale-[1.02]"
+            <a
+              href={`${APP_URL}/register`}
+              className="group inline-flex h-16 items-center gap-3 rounded-2xl bg-white px-12 text-[17px] font-extrabold text-gray-900 shadow-2xl shadow-black/20 transition-all hover:bg-gray-50 hover:scale-[1.02] no-underline"
             >
               Get Started Free
               <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} className="transition-transform group-hover:translate-x-1">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
               </svg>
-            </button>
+            </a>
             <a
               href="mailto:hello@plugakademi.com"
               className="inline-flex h-16 items-center gap-2 rounded-2xl border border-white/20 px-10 text-[16px] font-semibold text-white/90 transition-all hover:bg-white/10 hover:border-white/30"
