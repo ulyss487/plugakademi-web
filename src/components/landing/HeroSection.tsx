@@ -1,3 +1,5 @@
+const APP_URL = "https://app.plugakademi.org";
+
 export default function HeroSection({ navigate }: { navigate: (p: string) => void }) {
   return (
     <section className="relative overflow-hidden">
@@ -41,15 +43,15 @@ export default function HeroSection({ navigate }: { navigate: (p: string) => voi
         </p>
 
         <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-          <button
-            onClick={() => navigate("/signup")}
-            className="group relative inline-flex h-14 items-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 px-10 text-[16px] font-bold text-white shadow-xl shadow-blue-600/25 transition-all hover:shadow-blue-600/40 hover:scale-[1.02]"
+          <a
+            href={`${APP_URL}/register`}
+            className="group relative inline-flex h-14 items-center gap-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 px-10 text-[16px] font-bold text-white shadow-xl shadow-blue-600/25 transition-all hover:shadow-blue-600/40 hover:scale-[1.02] no-underline"
           >
             Start Building for Free
             <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} className="transition-transform group-hover:translate-x-1">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
             </svg>
-          </button>
+          </a>
           <a
             href="#tools"
             className="inline-flex h-14 items-center gap-2 rounded-2xl border border-gray-200 bg-white px-8 text-[16px] font-semibold text-gray-700 shadow-sm transition-all hover:border-gray-300 hover:shadow-md hover:bg-gray-50"
