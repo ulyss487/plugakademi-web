@@ -31,7 +31,7 @@ export default function CTASection({ navigate }: { navigate: (p: string) => void
 
           <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <button
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/signup")}
               className="group inline-flex h-16 items-center gap-3 rounded-2xl bg-white px-12 text-[17px] font-extrabold text-gray-900 shadow-2xl shadow-black/20 transition-all hover:bg-gray-50 hover:scale-[1.02]"
             >
               Get Started Free
