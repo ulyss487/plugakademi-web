@@ -6,7 +6,6 @@ interface Settings {
   registration_open?: boolean;
   max_free_ai_uses?: number;
   community_enabled?: boolean;
-  default_language?: string;
 }
 
 export default function SettingsPage() {
@@ -16,112 +15,78 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    apiGet("/admin/settings")
-      .then(setSettings)
-      .catch(() => setSettings({}))
-      .finally(() => setLoading(false));
+    apiGet("/admin/settings").then(setSettings).catch(() => setSettings({})).finally(() => setLoading(false));
   }, []);
 
   const handleSave = async () => {
-    setSaving(true);
-    setSaved(false);
-    try {
-      await apiPut("/admin/settings", settings);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch (e: any) {
-      alert(e.message);
-    } finally {
-      setSaving(false);
-    }
+    setSaving(true); setSaved(false);
+    try { await apiPut("/admin/settings", settings); setSaved(true); setTimeout(() => setSaved(false), 3000); }
+    catch (e: any) { alert(e.message); }
+    finally { setSaving(false); }
   };
 
-  const toggleStyle = (on: boolean): React.CSSProperties => ({
-    width: 44, height: 24, borderRadius: 12, border: "none", cursor: "pointer",
-    background: on ? "#10B981" : "rgba(255,255,255,0.15)",
-    position: "relative", transition: "background 0.2s",
-  });
-
-  const dotStyle = (on: boolean): React.CSSProperties => ({
-    width: 18, height: 18, borderRadius: "50%", background: "#fff",
-    position: "absolute", top: 3, left: on ? 22 : 4, transition: "left 0.2s",
-  });
-
-  if (loading) return <div style={{ color: "rgba(255,255,255,0.4)", padding: 32 }}>Loading settings...</div>;
+  if (loading) return <div className="py-8 text-[14px] text-gray-400">Loading settings...</div>;
 
   return (
     <div>
-      <div style={{ marginBottom: 32 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: "#fff", margin: 0 }}>Settings</h1>
-        <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>
-          Platform configuration
-        </p>
+      <div className="mb-8">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Settings</h1>
+        <p className="mt-1 text-[14px] text-gray-500">Platform configuration</p>
       </div>
 
-      <div style={{
-        background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)",
-        borderRadius: 12, padding: 24, display: "flex", flexDirection: "column", gap: 24,
-        maxWidth: 600,
-      }}>
-        <SettingRow label="Maintenance Mode" desc="Take the platform offline for maintenance">
-          <button style={toggleStyle(!!settings.maintenance_mode)}
-            onClick={() => setSettings({ ...settings, maintenance_mode: !settings.maintenance_mode })}>
-            <div style={dotStyle(!!settings.maintenance_mode)} />
-          </button>
-        </SettingRow>
+      <div className="max-w-[600px] space-y-1 rounded-2xl border border-gray-200 bg-white p-6">
+        <SettingToggle
+          label="Maintenance Mode" desc="Take the platform offline for maintenance"
+          value={!!settings.maintenance_mode}
+          onChange={(v) => setSettings({ ...settings, maintenance_mode: v })}
+        />
+        <SettingToggle
+          label="Registration Open" desc="Allow new users to register"
+          value={settings.registration_open === true}
+          onChange={(v) => setSettings({ ...settings, registration_open: v })}
+        />
+        <SettingToggle
+          label="Community Enabled" desc="Enable/disable the community feed"
+          value={settings.community_enabled === true}
+          onChange={(v) => setSettings({ ...settings, community_enabled: v })}
+        />
 
-        <SettingRow label="Registration Open" desc="Allow new users to register">
-          <button style={toggleStyle(settings.registration_open === true)}
-            onClick={() => setSettings({ ...settings, registration_open: !(settings.registration_open === true) })}>
-            <div style={dotStyle(settings.registration_open === true)} />
-          </button>
-        </SettingRow>
-
-        <SettingRow label="Community Enabled" desc="Enable/disable the community feed">
-          <button style={toggleStyle(settings.community_enabled === true)}
-            onClick={() => setSettings({ ...settings, community_enabled: !(settings.community_enabled === true) })}>
-            <div style={dotStyle(settings.community_enabled === true)} />
-          </button>
-        </SettingRow>
-
-        <SettingRow label="Max Free AI Uses" desc="Daily limit for free tier AI tool usage">
+        <div className="flex items-center justify-between border-b border-gray-100 py-5">
+          <div>
+            <div className="text-[14px] font-semibold text-gray-900">Max Free AI Uses</div>
+            <div className="mt-0.5 text-[12px] text-gray-400">Daily limit for free tier AI tool usage</div>
+          </div>
           <input
             type="number" value={settings.max_free_ai_uses ?? 5} min={0} max={100}
             onChange={(e) => setSettings({ ...settings, max_free_ai_uses: parseInt(e.target.value) || 0 })}
-            style={{
-              width: 80, padding: "6px 10px", borderRadius: 6,
-              border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.04)",
-              color: "#fff", fontSize: 13, textAlign: "center",
-            }}
+            className="h-10 w-20 rounded-lg border border-gray-200 bg-gray-50/50 px-3 text-center text-[14px] text-gray-700 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
           />
-        </SettingRow>
+        </div>
 
-        <div style={{ display: "flex", gap: 12, alignItems: "center", marginTop: 8 }}>
-          <button onClick={handleSave} disabled={saving} style={{
-            padding: "10px 24px", borderRadius: 8, border: "none",
-            background: "linear-gradient(135deg, #F59E0B, #D97706)", color: "#000",
-            fontSize: 14, fontWeight: 600, cursor: saving ? "not-allowed" : "pointer",
-          }}>
+        <div className="flex items-center gap-4 pt-4">
+          <button onClick={handleSave} disabled={saving} className="rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 px-6 py-2.5 text-[14px] font-semibold text-white shadow-sm hover:shadow-md transition-all disabled:opacity-50">
             {saving ? "Saving..." : "Save Settings"}
           </button>
-          {saved && <span style={{ color: "#10B981", fontSize: 13 }}>Settings saved!</span>}
+          {saved && <span className="text-[13px] font-medium text-emerald-600">Settings saved!</span>}
         </div>
       </div>
     </div>
   );
 }
 
-function SettingRow({ label, desc, children }: { label: string; desc: string; children: React.ReactNode }) {
+function SettingToggle({ label, desc, value, onChange }: { label: string; desc: string; value: boolean; onChange: (v: boolean) => void }) {
   return (
-    <div style={{
-      display: "flex", justifyContent: "space-between", alignItems: "center",
-      paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.04)",
-    }}>
+    <div className="flex items-center justify-between border-b border-gray-100 py-5">
       <div>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#fff" }}>{label}</div>
-        <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 2 }}>{desc}</div>
+        <div className="text-[14px] font-semibold text-gray-900">{label}</div>
+        <div className="mt-0.5 text-[12px] text-gray-400">{desc}</div>
       </div>
-      {children}
+      <button
+        onClick={() => onChange(!value)}
+        className={`relative h-6 w-11 rounded-full transition-colors ${value ? "bg-indigo-600" : "bg-gray-200"}`}
+      >
+        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all ${value ? "left-[22px]" : "left-0.5"}`} />
+      </button>
     </div>
   );
 }
