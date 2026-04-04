@@ -6,6 +6,7 @@ import {
   updateProfile,
   signOut,
   onAuthStateChanged,
+  deleteUser as firebaseDeleteUser,
   type User,
 } from "firebase/auth";
 import { apiFetch } from "@/lib/api";
@@ -23,7 +24,7 @@ interface AuthState {
   profile: UserProfile | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, phone?: string, country?: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -61,9 +62,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signup = async (email: string, password: string, name: string) => {
+  const signup = async (email: string, password: string, name: string, phone?: string, country?: string) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
+    try {
+      await apiFetch("/users", {
+        method: "POST",
+        body: JSON.stringify({
+          uid: cred.user.uid,
+          email: email,
+          display_name: name,
+          phone: phone || "",
+          country: country || "",
+        }),
+      });
+    } catch (backendError: any) {
+      try { await firebaseDeleteUser(cred.user); } catch {}
+      const msg = backendError.message || "Failed to create account";
+      if (msg.includes("Phone number is already registered")) throw new Error("This phone number is already in use.");
+      if (msg.includes("Email is already registered")) throw new Error("This email is already in use.");
+      if (msg.includes("Invalid phone number")) throw new Error("Invalid phone number.");
+      throw new Error(msg);
+    }
   };
 
   const logout = async () => {
