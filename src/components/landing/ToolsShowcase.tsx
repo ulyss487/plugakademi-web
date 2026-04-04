@@ -84,7 +84,7 @@ export default function ToolsShowcase({ navigate }: { navigate: (p: string) => v
               ))}
             </ul>
 
-            <button onClick={() => navigate("/login")} className={`inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${t.gradient} px-6 py-3 text-[14px] font-bold text-white transition-all hover:brightness-110 hover:shadow-lg`}>
+            <button onClick={() => navigate("/signup")} className={`inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r ${t.gradient} px-6 py-3 text-[14px] font-bold text-white transition-all hover:brightness-110 hover:shadow-lg`}>
               Try {t.title.split(" ")[0]} Free
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
             </button>
