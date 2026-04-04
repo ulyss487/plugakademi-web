@@ -8,7 +8,6 @@ interface UserRecord {
   role: string;
   subscription_tier?: string;
   created_at?: string;
-  last_login?: string;
 }
 
 export default function UsersPage() {
@@ -29,13 +28,8 @@ export default function UsersPage() {
   useEffect(() => { fetchUsers(); }, []);
 
   const handleRoleChange = async (uid: string) => {
-    try {
-      await apiPut(`/admin/users/${uid}/role`, { role: editRole });
-      setEditUid(null);
-      fetchUsers();
-    } catch (e: any) {
-      alert(e.message);
-    }
+    try { await apiPut(`/admin/users/${uid}/role`, { role: editRole }); setEditUid(null); fetchUsers(); }
+    catch (e: any) { alert(e.message); }
   };
 
   const filtered = users.filter((u) => {
@@ -43,91 +37,63 @@ export default function UsersPage() {
     return !q || u.email?.toLowerCase().includes(q) || u.name?.toLowerCase().includes(q);
   });
 
+  const roleBadge = (role: string) => {
+    const isAdmin = role === "admin" || role === "owner";
+    return (
+      <span className={`inline-flex rounded-md px-2 py-0.5 text-[11px] font-semibold ${isAdmin ? "bg-indigo-50 text-indigo-700" : "bg-gray-100 text-gray-600"}`}>
+        {role}
+      </span>
+    );
+  };
+
   return (
     <div>
-      <div style={{ marginBottom: 24, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 style={{ fontSize: 24, fontWeight: 800, color: "#fff", margin: 0 }}>Users</h1>
-          <p style={{ fontSize: 14, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>
-            {users.length} registered users
-          </p>
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900">Users</h1>
+          <p className="mt-1 text-[14px] text-gray-500">{users.length} registered users</p>
         </div>
         <input
           type="text" placeholder="Search users..." value={search}
           onChange={(e) => setSearch(e.target.value)}
-          style={{
-            padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(255,255,255,0.1)",
-            background: "rgba(255,255,255,0.04)", color: "#fff", fontSize: 13, width: 240,
-          }}
+          className="h-10 w-[260px] rounded-xl border border-gray-200 bg-white px-4 text-[13px] text-gray-900 outline-none placeholder:text-gray-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20"
         />
       </div>
 
       {loading ? (
-        <div style={{ color: "rgba(255,255,255,0.4)" }}>Loading users...</div>
+        <div className="text-[14px] text-gray-400">Loading users...</div>
       ) : (
-        <div style={{
-          background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)",
-          borderRadius: 12, overflow: "hidden",
-        }}>
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white">
+          <table className="w-full">
             <thead>
-              <tr style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+              <tr className="border-b border-gray-100 bg-gray-50/50">
                 {["Email", "Name", "Role", "Tier", "Joined", "Actions"].map((h) => (
-                  <th key={h} style={{
-                    padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600,
-                    color: "rgba(255,255,255,0.4)", textTransform: "uppercase", letterSpacing: 1,
-                  }}>{h}</th>
+                  <th key={h} className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {filtered.map((u) => (
-                <tr key={u.uid} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
-                  <td style={{ padding: "10px 16px", fontSize: 13, color: "#fff" }}>{u.email}</td>
-                  <td style={{ padding: "10px 16px", fontSize: 13, color: "rgba(255,255,255,0.6)" }}>
-                    {u.name || "—"}
-                  </td>
-                  <td style={{ padding: "10px 16px" }}>
+                <tr key={u.uid} className="border-b border-gray-50 transition-colors hover:bg-gray-50/50">
+                  <td className="px-5 py-3 text-[13px] font-medium text-gray-900">{u.email}</td>
+                  <td className="px-5 py-3 text-[13px] text-gray-500">{u.name || "—"}</td>
+                  <td className="px-5 py-3">
                     {editUid === u.uid ? (
-                      <select
-                        value={editRole}
-                        onChange={(e) => setEditRole(e.target.value)}
-                        style={{
-                          background: "#1a1a2e", color: "#fff", border: "1px solid rgba(255,255,255,0.2)",
-                          borderRadius: 4, padding: "4px 8px", fontSize: 12,
-                        }}
-                      >
-                        {["free", "basic", "premium", "admin", "owner"].map((r) => (
-                          <option key={r} value={r}>{r}</option>
-                        ))}
+                      <select value={editRole} onChange={(e) => setEditRole(e.target.value)} className="rounded-md border border-gray-200 bg-white px-2 py-1 text-[12px] text-gray-700 outline-none focus:border-indigo-500">
+                        {["free", "basic", "premium", "admin", "owner"].map((r) => <option key={r} value={r}>{r}</option>)}
                       </select>
-                    ) : (
-                      <span style={{
-                        fontSize: 11, fontWeight: 600, padding: "3px 8px", borderRadius: 4,
-                        background: u.role === "admin" || u.role === "owner"
-                          ? "rgba(245,158,11,0.15)" : "rgba(99,102,241,0.15)",
-                        color: u.role === "admin" || u.role === "owner" ? "#F59E0B" : "#818CF8",
-                      }}>
-                        {u.role}
-                      </span>
-                    )}
+                    ) : roleBadge(u.role)}
                   </td>
-                  <td style={{ padding: "10px 16px", fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-                    {u.subscription_tier || "free"}
-                  </td>
-                  <td style={{ padding: "10px 16px", fontSize: 12, color: "rgba(255,255,255,0.4)" }}>
-                    {u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}
-                  </td>
-                  <td style={{ padding: "10px 16px" }}>
+                  <td className="px-5 py-3 text-[12px] text-gray-400">{u.subscription_tier || "free"}</td>
+                  <td className="px-5 py-3 text-[12px] text-gray-400">{u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}</td>
+                  <td className="px-5 py-3">
                     {editUid === u.uid ? (
-                      <div style={{ display: "flex", gap: 4 }}>
-                        <button onClick={() => handleRoleChange(u.uid)} style={actionBtn("#10B981")}>Save</button>
-                        <button onClick={() => setEditUid(null)} style={actionBtn("#6B7280")}>Cancel</button>
+                      <div className="flex gap-2">
+                        <button onClick={() => handleRoleChange(u.uid)} className="rounded-md bg-emerald-50 px-3 py-1 text-[11px] font-semibold text-emerald-700 hover:bg-emerald-100">Save</button>
+                        <button onClick={() => setEditUid(null)} className="rounded-md bg-gray-100 px-3 py-1 text-[11px] font-semibold text-gray-600 hover:bg-gray-200">Cancel</button>
                       </div>
                     ) : (
-                      <button onClick={() => { setEditUid(u.uid); setEditRole(u.role); }} style={actionBtn("#6366F1")}>
-                        Edit Role
-                      </button>
+                      <button onClick={() => { setEditUid(u.uid); setEditRole(u.role); }} className="rounded-md bg-indigo-50 px-3 py-1 text-[11px] font-semibold text-indigo-700 hover:bg-indigo-100">Edit Role</button>
                     )}
                   </td>
                 </tr>
@@ -135,17 +101,10 @@ export default function UsersPage() {
             </tbody>
           </table>
           {filtered.length === 0 && (
-            <div style={{ padding: 32, textAlign: "center", color: "rgba(255,255,255,0.3)", fontSize: 13 }}>
-              No users found
-            </div>
+            <div className="py-12 text-center text-[13px] text-gray-400">No users found</div>
           )}
         </div>
       )}
     </div>
   );
 }
-
-const actionBtn = (color: string): React.CSSProperties => ({
-  padding: "4px 10px", borderRadius: 4, border: `1px solid ${color}33`,
-  background: `${color}15`, color, fontSize: 11, fontWeight: 500, cursor: "pointer",
-});
