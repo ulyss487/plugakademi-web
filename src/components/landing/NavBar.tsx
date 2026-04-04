@@ -38,7 +38,7 @@ export default function NavBar({ navigate }: { navigate: (p: string) => void }) 
             Sign in
           </button>
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/signup")}
             className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-[14px] font-semibold text-white shadow-lg shadow-blue-600/20 transition-all hover:shadow-blue-600/30 hover:brightness-110"
           >
             Get Started Free
@@ -61,7 +61,7 @@ export default function NavBar({ navigate }: { navigate: (p: string) => void }) 
           ))}
           <div className="mt-4 flex flex-col gap-3">
             <button onClick={() => navigate("/login")} className="rounded-xl border border-gray-200 px-5 py-3 text-[15px] font-medium text-gray-700">Sign in</button>
-            <button onClick={() => navigate("/login")} className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[15px] font-semibold text-white">Get Started Free</button>
+            <button onClick={() => navigate("/signup")} className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[15px] font-semibold text-white">Get Started Free</button>
           </div>
         </div>
       )}
