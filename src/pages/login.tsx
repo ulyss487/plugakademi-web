@@ -10,10 +10,11 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (!authLoading && user) setLocation("/dashboard");
-  }, [authLoading, user, setLocation]);
+    if (!authLoading && user) setSuccess(true);
+  }, [authLoading, user]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export default function LoginPage() {
     setError("");
     try {
       await login(email, password);
-      setLocation("/dashboard");
+      setSuccess(true);
     } catch (err: any) {
       const code = err?.code || "";
       if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") setError("Invalid email or password");
@@ -30,6 +31,33 @@ export default function LoginPage() {
       else setError(err.message || "Login failed");
     } finally { setLoading(false); }
   };
+
+  if (success) {
+    return (
+      <div className="flex min-h-screen bg-white">
+        <LeftPanel />
+        <div className="flex flex-1 flex-col items-center justify-center px-6 py-12 lg:px-8">
+          <div className="w-full max-w-[400px] text-center">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-50">
+              <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} className="text-green-500"><path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" /></svg>
+            </div>
+            <h2 className="text-[28px] font-extrabold tracking-tight text-gray-900">Welcome Back!</h2>
+            <p className="mt-3 text-[15px] text-gray-500">
+              You're signed in. Open the app to access all tools, courses, and community features.
+            </p>
+            <a href="https://apps.apple.com/app/plug-akademi/id6740091108" target="_blank" rel="noopener noreferrer"
+              className="mt-8 flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gray-900 text-[15px] font-bold text-white shadow-lg transition-all hover:bg-gray-800">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              Open on the App Store
+            </a>
+            <button onClick={() => setLocation("/")} className="mt-4 flex h-[48px] w-full items-center justify-center rounded-xl border border-gray-200 text-[14px] font-medium text-gray-600 transition-all hover:bg-gray-50">
+              Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-white">
