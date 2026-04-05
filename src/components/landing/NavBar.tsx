@@ -9,6 +9,7 @@ const NAV_LINKS = [
 
 export default function NavBar({ navigate }: { navigate: (p: string) => void }) {
   const [open, setOpen] = useState(false);
+  const APP_URL = "https://app.plugakademi.org";
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100/80 bg-white/70 backdrop-blur-2xl">
@@ -31,18 +32,18 @@ export default function NavBar({ navigate }: { navigate: (p: string) => void }) 
         </nav>
 
         <div className="hidden items-center gap-4 md:flex">
-          <button
-            onClick={() => navigate("/login")}
-            className="text-[14px] font-medium text-gray-500 transition-all hover:text-gray-900"
+          <a
+            href={`${APP_URL}/login`}
+            className="text-[14px] font-medium text-gray-500 transition-colors hover:text-gray-900"
           >
             Sign in
-          </button>
-          <button
-            onClick={() => navigate("/signup")}
-            className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2.5 text-[14px] font-semibold text-white shadow-lg shadow-blue-600/20 transition-all hover:shadow-blue-600/30 hover:brightness-110"
+          </a>
+          <a
+            href={`${APP_URL}/register`}
+            className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-2.5 text-[14px] font-semibold text-white shadow-lg shadow-blue-600/20 transition-all hover:shadow-blue-600/30 hover:brightness-110"
           >
             Get Started Free
-          </button>
+          </a>
         </div>
 
         <button className="md:hidden text-gray-500" onClick={() => setOpen(!open)}>
@@ -59,10 +60,9 @@ export default function NavBar({ navigate }: { navigate: (p: string) => void }) 
               {l.label}
             </a>
           ))}
-          <div className="mt-4">
-            <button onClick={() => { setOpen(false); navigate("/signup"); }} className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[15px] font-semibold text-white text-center">
-              Get Started Free
-            </button>
+          <div className="mt-4 flex flex-col gap-3">
+            <a href={`${APP_URL}/login`} className="rounded-xl border border-gray-200 px-5 py-3 text-[15px] font-medium text-gray-700 text-center">Sign in</a>
+            <a href={`${APP_URL}/register`} className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-[15px] font-semibold text-white text-center">Get Started Free</a>
           </div>
         </div>
       )}
