@@ -36,15 +36,11 @@ export default function SignupPage() {
   const [referralName, setReferralName] = useState("");
   const [referralError, setReferralError] = useState("");
   const referralTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [step, setStep] = useState<"form" | "verify" | "success">("form");
+  const [step, setStep] = useState<"form" | "verify">("form");
 
-  // If user is already logged in, go to full Expo dashboard
   useEffect(() => {
-    if (!authLoading && user && step === "form") {
-      document.cookie = "pa_auth=1; path=/; max-age=31536000";
-      window.location.href = "/";
-    }
-  }, [authLoading, user, step]);
+    if (!authLoading && user) setLocation("/dashboard");
+  }, [authLoading, user, setLocation]);
 
   const setField = (key: string, value: string) => {
     setForm((f) => ({ ...f, [key]: value }));
@@ -87,7 +83,8 @@ export default function SignupPage() {
           });
         } catch {}
       }
-      setStep("success");
+      window.alert("Account created! Please sign in to continue.");
+      setLocation("/login");
     } catch (err: any) {
       setStep("form");
       const msg = err.code === "auth/email-already-in-use" ? "This email is already in use."
@@ -122,44 +119,7 @@ export default function SignupPage() {
 
   const inputCls = "h-12 w-full rounded-xl border border-gray-200 bg-gray-50/50 px-4 text-[15px] text-gray-900 outline-none transition-all placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20";
   const errCls = "text-[12px] text-red-500 mt-1";
-
-  if (step === "success") {
-    return (
-      <div className="flex min-h-screen bg-white">
-        <LeftPanel />
-        <div className="flex flex-1 flex-col items-center justify-center overflow-y-auto px-6 py-10 lg:px-8">
-          <div className="w-full max-w-[420px] text-center">
-            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100">
-              <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} className="text-green-600">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-            </div>
-            <h2 className="text-[28px] font-extrabold tracking-tight text-gray-900">Account Created!</h2>
-            <p className="mt-3 text-[16px] leading-relaxed text-gray-500">
-              Your Plug Akademi account is ready. Download our app to access all tools, courses, and community features.
-            </p>
-            <div className="mt-8 flex flex-col gap-3">
-              <a
-                href="https://apps.apple.com/app/plug-akademi/id6742820338"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-14 items-center justify-center gap-3 rounded-2xl bg-gray-900 px-8 text-[15px] font-bold text-white transition-all hover:bg-gray-800"
-              >
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                Download on the App Store
-              </a>
-              <button
-                onClick={() => setLocation("/")}
-                className="inline-flex h-12 items-center justify-center rounded-xl border border-gray-200 text-[14px] font-medium text-gray-600 transition-all hover:bg-gray-50"
-              >
-                Back to Home
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const hintCls = "text-[12px] text-gray-400 mt-1";
 
   return (
     <div className="flex min-h-screen bg-white">
@@ -170,10 +130,6 @@ export default function SignupPage() {
             <OtpVerification phone={getRawPhone(form.phone)} onVerified={handlePhoneVerified} onBack={() => setStep("form")} />
           ) : (
             <>
-              <button onClick={() => setLocation("/")} className="mb-6 flex items-center gap-1.5 text-[13px] font-medium text-gray-400 hover:text-gray-600 transition-colors">
-                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" /></svg>
-                Back to home
-              </button>
               <div className="mb-6">
                 <h2 className="text-[26px] font-bold tracking-tight text-gray-900">Create your account</h2>
                 <p className="mt-1 text-[15px] text-gray-500">Fill in your details to get started</p>
@@ -250,11 +206,13 @@ export default function SignupPage() {
                   className="mt-2 flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-[15px] font-bold text-white shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? (<><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />Creating...</>) : (<>Create Account <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></>)}
                 </button>
-                <p className="mt-4 text-center text-[13px] text-gray-500">
-                  Already have an account?{" "}
-                  <a href="/login" className="font-semibold text-indigo-600 hover:text-indigo-700">Sign In</a>
-                </p>
               </form>
+              <div className="mt-6 flex items-center gap-3">
+                <div className="h-px flex-1 bg-gray-200" /><span className="text-[12px] font-medium text-gray-400">or</span><div className="h-px flex-1 bg-gray-200" />
+              </div>
+              <p className="mt-5 text-center text-[14px] text-gray-500">
+                Already have an account? <button onClick={() => setLocation("/login")} className="font-semibold text-indigo-600 hover:text-indigo-700">Sign In</button>
+              </p>
             </>
           )}
         </div>
