@@ -32,6 +32,12 @@ export default function NavBar({ navigate }: { navigate: (p: string) => void }) 
 
         <div className="hidden items-center gap-4 md:flex">
           <button
+            onClick={() => navigate("/login")}
+            className="text-[14px] font-medium text-gray-500 transition-all hover:text-gray-900"
+          >
+            Sign in
+          </button>
+          <button
             onClick={() => navigate("/signup")}
             className="rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-2.5 text-[14px] font-semibold text-white shadow-lg shadow-blue-600/20 transition-all hover:shadow-blue-600/30 hover:brightness-110"
           >
