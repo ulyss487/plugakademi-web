@@ -38,9 +38,10 @@ export default function SignupPage() {
   const referralTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [step, setStep] = useState<"form" | "verify" | "success">("form");
 
-  // If user is already logged in, redirect to dashboard instead of showing success
+  // If user is already logged in and just signed up, show success
+  // Don't redirect to /dashboard to avoid showing old cached Expo dashboard
   useEffect(() => {
-    if (!authLoading && user && step === "form") setLocation("/dashboard");
+    if (!authLoading && user && step === "form") setStep("success");
   }, [authLoading, user, step]);
 
   const setField = (key: string, value: string) => {
