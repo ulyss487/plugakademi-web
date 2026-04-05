@@ -13,7 +13,10 @@ export default function LoginPage() {
 
   // If already logged in, go to full Expo dashboard
   useEffect(() => {
-    if (!authLoading && user) window.location.href = "/dashboard";
+    if (!authLoading && user) {
+      document.cookie = "pa_auth=1; path=/; max-age=31536000";
+      window.location.href = "/";
+    }
   }, [authLoading, user]);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -23,8 +26,8 @@ export default function LoginPage() {
     setError("");
     try {
       await login(email, password);
-      // Full page reload to serve Expo web app at /dashboard
-      window.location.href = "/dashboard";
+      document.cookie = "pa_auth=1; path=/; max-age=31536000";
+      window.location.href = "/";
     } catch (err: any) {
       const code = err?.code || "";
       if (code === "auth/user-not-found" || code === "auth/wrong-password" || code === "auth/invalid-credential") setError("Invalid email or password");

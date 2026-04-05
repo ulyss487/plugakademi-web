@@ -40,7 +40,10 @@ export default function SignupPage() {
 
   // If user is already logged in, go to full Expo dashboard
   useEffect(() => {
-    if (!authLoading && user && step === "form") window.location.href = "/dashboard";
+    if (!authLoading && user && step === "form") {
+      document.cookie = "pa_auth=1; path=/; max-age=31536000";
+      window.location.href = "/";
+    }
   }, [authLoading, user, step]);
 
   const setField = (key: string, value: string) => {
