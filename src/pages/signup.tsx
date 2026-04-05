@@ -38,8 +38,9 @@ export default function SignupPage() {
   const referralTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [step, setStep] = useState<"form" | "verify" | "success">("form");
 
+  // If user is already logged in, redirect to dashboard instead of showing success
   useEffect(() => {
-    if (!authLoading && user && step !== "success") setStep("success");
+    if (!authLoading && user && step === "form") setLocation("/dashboard");
   }, [authLoading, user, step]);
 
   const setField = (key: string, value: string) => {
@@ -246,6 +247,10 @@ export default function SignupPage() {
                   className="mt-2 flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-[15px] font-bold text-white shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
                   {loading ? (<><span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />Creating...</>) : (<>Create Account <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg></>)}
                 </button>
+                <p className="mt-4 text-center text-[13px] text-gray-500">
+                  Already have an account?{" "}
+                  <a href="/login" className="font-semibold text-indigo-600 hover:text-indigo-700">Sign In</a>
+                </p>
               </form>
             </>
           )}
