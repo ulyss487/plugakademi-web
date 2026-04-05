@@ -56,10 +56,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={LandingPage} />
-      <Route path="/welcome">{() => <Redirect to="/" />}</Route>
       <Route path="/login" component={LoginPage} />
       <Route path="/signup" component={SignupPage} />
-      <Route path="/register" component={SignupPage} />
       <Route path="/dashboard">{() => <ProtectedRoute component={DashboardPage} />}</Route>
       <Route path="/users">{() => <ProtectedRoute component={UsersPage} />}</Route>
       <Route path="/courses">{() => <ProtectedRoute component={CoursesPage} />}</Route>
@@ -76,7 +74,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <AuthProvider>
-          <WouterRouter>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
             <Router />
           </WouterRouter>
         </AuthProvider>
