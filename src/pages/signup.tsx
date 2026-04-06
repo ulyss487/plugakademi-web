@@ -31,6 +31,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [referralCode, setReferralCode] = useState("");
   const [referralStatus, setReferralStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle");
   const [referralName, setReferralName] = useState("");
@@ -60,6 +61,7 @@ export default function SignupPage() {
     if (form.password !== form.confirmPassword) e.confirmPassword = "Passwords do not match";
     if (!form.country) e.country = "Select your country";
     if (!acceptedTerms) e.terms = "You must accept the Terms & Conditions";
+    if (!smsConsent) e.smsConsent = "You must consent to receive SMS notifications";
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -74,7 +76,7 @@ export default function SignupPage() {
     setLoading(true);
     try {
       const rawPhone = getRawPhone(form.phone);
-      await signup(form.email.trim(), form.password, form.displayName.trim(), rawPhone, form.country);
+      await signup(form.email.trim(), form.password, form.displayName.trim(), rawPhone, form.country, smsConsent);
       if (referralCode && referralStatus === "valid") {
         try {
           await fetch(`${API_URL}/api/referral/track-signup`, {
@@ -201,6 +203,21 @@ export default function SignupPage() {
                     </p>
                   </div>
                   {errors.terms && <p className={`${errCls} ml-8`}>{errors.terms}</p>}
+                </div>
+                <div className="mt-1">
+                  <div className="flex items-start gap-2.5">
+                    <button type="button" onClick={() => { setSmsConsent(!smsConsent); setErrors((e) => ({ ...e, smsConsent: "" })); }} className="mt-0.5 shrink-0">
+                      {smsConsent ? (
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="#4F46E5"><rect width="20" height="20" x="2" y="2" rx="4" /><path d="M9 12l2 2 4-4" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" fill="none" /></svg>
+                      ) : (
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" strokeWidth="2"><rect width="20" height="20" x="2" y="2" rx="4" /></svg>
+                      )}
+                    </button>
+                    <p className="text-[13px] text-gray-500 leading-5">
+                      I consent to receive SMS notifications, updates, and alerts from Plug Akademi. Message & data rates may apply. Reply STOP to unsubscribe at any time.
+                    </p>
+                  </div>
+                  {errors.smsConsent && <p className={`${errCls} ml-8`}>{errors.smsConsent}</p>}
                 </div>
                 <button type="submit" disabled={loading}
                   className="mt-2 flex h-[52px] items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-blue-600 text-[15px] font-bold text-white shadow-lg shadow-indigo-600/20 disabled:opacity-50 disabled:cursor-not-allowed">
