@@ -2,7 +2,7 @@ const FOOTER_LINKS = {
   Product: [
     { label: "PlugGPT AI", href: "#tools" },
     { label: "BuyBox Analyzer", href: "#tools" },
-    { label: "Profit Calculator", href: "#tools" },
+    { label: "Amazon VS Walmart", href: "#tools" },
     { label: "Product Leads", href: "#features" },
     { label: "Video Courses", href: "#features" },
   ],
