@@ -24,7 +24,7 @@ interface AuthState {
   profile: UserProfile | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string, name: string, phone?: string, country?: string) => Promise<void>;
+  signup: (email: string, password: string, name: string, phone?: string, country?: string, smsConsent?: boolean) => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await signInWithEmailAndPassword(auth, email, password);
   };
 
-  const signup = async (email: string, password: string, name: string, phone?: string, country?: string) => {
+  const signup = async (email: string, password: string, name: string, phone?: string, country?: string, smsConsent?: boolean) => {
     const cred = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(cred.user, { displayName: name });
     try {
@@ -74,6 +74,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           display_name: name,
           phone: phone || "",
           country: country || "",
+          sms_consent: smsConsent || false,
+          sms_consent_at: smsConsent ? new Date().toISOString() : null,
         }),
       });
     } catch (backendError: any) {
