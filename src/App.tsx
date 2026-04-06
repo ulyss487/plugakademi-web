@@ -14,6 +14,8 @@ import AnalyticsPage from "@/pages/analytics";
 import SettingsPage from "@/pages/settings";
 import LandingPage from "@/pages/landing";
 import NotFound from "@/pages/not-found";
+import PaymentSuccessPage from "@/pages/payment-success";
+import PaymentCancelPage from "@/pages/payment-cancel";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +66,8 @@ function Router() {
       <Route path="/content">{() => <ProtectedRoute component={ContentPage} />}</Route>
       <Route path="/analytics">{() => <ProtectedRoute component={AnalyticsPage} />}</Route>
       <Route path="/settings">{() => <ProtectedRoute component={SettingsPage} />}</Route>
+      <Route path="/payment-success" component={PaymentSuccessPage} />
+      <Route path="/payment-cancel" component={PaymentCancelPage} />
       <Route component={NotFound} />
     </Switch>
   );
