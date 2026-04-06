@@ -12,6 +12,8 @@ export async function apiFetch(path: string, options: RequestInit = {}) {
   if (user) {
     const token = await user.getIdToken();
     headers["Authorization"] = `Bearer ${token}`;
+    headers["x-admin-id"] = user.uid;
+    headers["x-admin-name"] = user.displayName || user.email || "Admin";
   }
 
   const res = await fetch(`${API_BASE}${path}`, { ...options, headers });
