@@ -1,4 +1,4 @@
-const APP_URL = "https://app.plugakademi.org";
+const APP_URL = "https://www.plugakademi.org";
 
 export default function CTASection({ navigate }: { navigate: (p: string) => void }) {
   return (
