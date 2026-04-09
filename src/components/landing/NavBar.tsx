@@ -9,7 +9,7 @@ const NAV_LINKS = [
 
 export default function NavBar({ navigate }: { navigate: (p: string) => void }) {
   const [open, setOpen] = useState(false);
-  const APP_URL = "https://app.plugakademi.org";
+  const APP_URL = "https://www.plugakademi.org";
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-100/80 bg-white/70 backdrop-blur-2xl">
