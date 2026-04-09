@@ -199,7 +199,7 @@ export default function SignupPage() {
                       )}
                     </button>
                     <p className="text-[13px] text-gray-500 leading-5">
-                      I agree to the <a href="#" className="text-indigo-600 font-semibold hover:text-indigo-700">Terms & Conditions</a> and <a href="#" className="text-indigo-600 font-semibold hover:text-indigo-700">Privacy Policy</a>
+                      I agree to the <a href="https://www.plugakademi.org/company/terms" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-semibold hover:text-indigo-700">Terms & Conditions</a> and <a href="https://www.plugakademi.org/company/privacy" target="_blank" rel="noopener noreferrer" className="text-indigo-600 font-semibold hover:text-indigo-700">Privacy Policy</a>
                     </p>
                   </div>
                   {errors.terms && <p className={`${errCls} ml-8`}>{errors.terms}</p>}
